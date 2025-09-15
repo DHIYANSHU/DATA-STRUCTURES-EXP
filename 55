@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct Node {
+    char data;
+    struct Node* next;
+} Node;
+
+Node* createNode(char data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+bool isPalindrome(Node* head) {
+    if (head == NULL || head->next == NULL) {
+        return true;
+    }
+    char stack[100];
+    int top = -1;
+    Node* current = head;
+    while (current != NULL) {
+        stack[++top] = current->data;
+        current = current->next;
+    }
+    current = head;
+    while (current != NULL) {
+        if (current->data != stack[top--]) {
+            return false;
+        }
+        current = current->next;
+    }
+    return true;
+}
+
+int main() {
+    Node* head1 = createNode('r');
+    head1->next = createNode('a');
+    head1->next->next = createNode('c');
+    head1->next->next->next = createNode('e');
+    head1->next->next->next->next = createNode('c');
+    head1->next->next->next->next->next = createNode('a');
+    head1->next->next->next->next->next->next = createNode('r');
+
+    Node* head2 = createNode('h');
+    head2->next = createNode('e');
+    head2->next->next = createNode('l');
+    head2->next->next->next = createNode('l');
+    head2->next->next->next->next = createNode('o');
+
+    printf("List 1 is a palindrome: %s\n", isPalindrome(head1) ? "true" : "false");
+    printf("List 2 is a palindrome: %s\n", isPalindrome(head2) ? "true" : "false");
+    return 0;
+}
