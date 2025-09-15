@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+#define V 4
+
+void printMinEdges(int graph[V][V]) {
+    int min_edges = 0;
+    for (int i = 0; i < V; i++) {
+        for (int j = i + 1; j < V; j++) {
+            if (graph[i][j] != 0) {
+                min_edges++;
+            }
+        }
+    }
+    printf("The minimum number of edges to connect all nodes is V-1, or %d.\n", V - 1);
+    printf("However, the number of edges in this graph is: %d\n", min_edges);
+}
+
+int main() {
+    int graph[V][V] = {
+        {0, 1, 0, 1},
+        {1, 0, 1, 0},
+        {0, 1, 0, 1},
+        {1, 0, 1, 0}
+    };
+
+    printf("Adjacency Matrix representation:\n");
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+
+    printMinEdges(graph);
+    return 0;
+}
