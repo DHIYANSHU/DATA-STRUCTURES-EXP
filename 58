@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+int getLength(Node* head) {
+    int count = 0;
+    while (head != NULL) {
+        count++;
+        head = head->next;
+    }
+    return count;
+}
+
+Node* findIntersection(Node* head1, Node* head2) {
+    int len1 = getLength(head1);
+    int len2 = getLength(head2);
+
+    int diff = abs(len1 - len2);
+
+    if (len1 > len2) {
+        for (int i = 0; i < diff; i++) {
+            head1 = head1->next;
+        }
+    } else {
+        for (int i = 0; i < diff; i++) {
+            head2 = head2->next;
+        }
+    }
+
+    while (head1 != NULL && head2 != NULL) {
+        if (head1 == head2) {
+            return head1;
+        }
+        head1 = head1->next;
+        head2 = head2->next;
+    }
+    return NULL;
+}
+
+int main() {
+    Node* common = createNode(7);
+    common->next = createNode(8);
+
+    Node* head1 = createNode(3);
+    head1->next = createNode(6);
+    head1->next->next = createNode(9);
+    head1->next->next->next = common;
+
+    Node* head2 = createNode(10);
+    head2->next = common;
+
+    Node* intersection = findIntersection(head1, head2);
+    if (intersection != NULL) {
+        printf("Intersection point is: %d\n", intersection->data);
+    } else {
+        printf("No intersection point found.\n");
+    }
+    return 0;
+}
