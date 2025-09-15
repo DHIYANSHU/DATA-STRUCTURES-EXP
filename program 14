@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// A binary tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create a new tree node
+struct Node* create_node(int data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Function for Inorder Traversal (Left -> Root -> Right)
+void inorder_traversal(struct Node* node) {
+    if (node == NULL) return;
+    inorder_traversal(node->left);
+    printf("%d ", node->data);
+    inorder_traversal(node->right);
+}
+
+// Function for Preorder Traversal (Root -> Left -> Right)
+void preorder_traversal(struct Node* node) {
+    if (node == NULL) return;
+    printf("%d ", node->data);
+    preorder_traversal(node->left);
+    preorder_traversal(node->right);
+}
+
+// Function for Postorder Traversal (Left -> Right -> Root)
+void postorder_traversal(struct Node* node) {
+    if (node == NULL) return;
+    postorder_traversal(node->left);
+    postorder_traversal(node->right);
+    printf("%d ", node->data);
+}
+
+int main() {
+    struct Node* root = create_node(1);
+    root->left = create_node(2);
+    root->right = create_node(3);
+    root->left->left = create_node(4);
+    root->left->right = create_node(5);
+
+    printf("Preorder traversal of binary tree is: ");
+    preorder_traversal(root);
+    printf("\n");
+
+    printf("Inorder traversal of binary tree is: ");
+    inorder_traversal(root);
+    printf("\n");
+
+    printf("Postorder traversal of binary tree is: ");
+    postorder_traversal(root);
+    printf("\n");
+
+    return 0;
+}
