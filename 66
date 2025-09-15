@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Stack {
+    int arr[100];
+    int top;
+} Stack;
+
+void initStack(Stack* s) {
+    s->top = -1;
+}
+
+void push(Stack* s, int data) {
+    s->arr[++s->top] = data;
+}
+
+int pop(Stack* s) {
+    if (s->top == -1) return -1;
+    return s->arr[s->top--];
+}
+
+int getBottom(Stack* s) {
+    int temp[100], count = 0;
+    while (s->top > 0) {
+        temp[count++] = pop(s);
+    }
+    int bottom = pop(s);
+    while (count > 0) {
+        push(s, temp[--count]);
+    }
+    return bottom;
+}
+
+int main() {
+    Stack s1, s2;
+    initStack(&s1);
+    initStack(&s2);
+
+    push(&s1, 10);
+    push(&s1, 20);
+    push(&s1, 30);
+
+    push(&s2, 40);
+    push(&s2, 50);
+    push(&s2, 60);
+
+    int bottom1 = getBottom(&s1);
+    int top2 = s2.arr[s2.top];
+    
+    printf("Bottom of stack 1: %d\n", bottom1);
+    printf("Top of stack 2: %d\n", top2);
+    printf("Sum: %d\n", bottom1 + top2);
+    return 0;
+}
