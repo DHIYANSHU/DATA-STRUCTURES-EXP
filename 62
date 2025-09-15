@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void printList(Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+void insertAtFront(Node** head, int data) {
+    Node* newNode = createNode(data);
+    newNode->next = *head;
+    *head = newNode;
+}
+
+void insertAfter(Node* prevNode, int data) {
+    if (prevNode == NULL) return;
+    Node* newNode = createNode(data);
+    newNode->next = prevNode->next;
+    prevNode->next = newNode;
+}
+
+void insertAtEnd(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* last = *head;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+    last->next = newNode;
+}
+
+int main() {
+    Node* head = NULL;
+    insertAtEnd(&head, 10);
+    insertAtFront(&head, 5);
+    insertAtEnd(&head, 20);
+    insertAfter(head->next, 15);
+    printf("Linked list after insertions: ");
+    printList(head);
+    return 0;
+}
