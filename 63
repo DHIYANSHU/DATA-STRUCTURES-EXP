@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+    return newNode;
+}
+
+void insertAtEnd(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* last = *head;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+    last->next = newNode;
+    newNode->prev = last;
+}
+
+void printListForward(Node* head) {
+    printf("Forward traversal: ");
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+void printListBackward(Node* head) {
+    Node* last = head;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+    printf("Backward traversal: ");
+    while (last != NULL) {
+        printf("%d ", last->data);
+        last = last->prev;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* head = NULL;
+    insertAtEnd(&head, 1);
+    insertAtEnd(&head, 2);
+    insertAtEnd(&head, 3);
+    printListForward(head);
+    printListBackward(head);
+    return 0;
+}
