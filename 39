@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define N 4
+
+int graph[N][N] = {
+    {0, 10, 15, 20},
+    {10, 0, 35, 25},
+    {15, 35, 0, 30},
+    {20, 25, 30, 0}
+};
+
+int min_path = INT_MAX;
+int path[N + 1];
+int min_path_arr[N + 1];
+int visited[N] = {0};
+
+void tsp(int current_path[], int count, int current_cost) {
+    if (count == N) {
+        current_cost += graph[current_path[N - 1]][current_path[0]];
+        if (current_cost < min_path) {
+            min_path = current_cost;
+            for (int i = 0; i < N; i++) {
+                min_path_arr[i] = current_path[i];
+            }
+            min_path_arr[N] = current_path[0];
+        }
+        return;
+    }
+
+    for (int i = 0; i < N; i++) {
+        if (!visited[i] && graph[current_path[count - 1]][i] != 0) {
+            visited[i] = 1;
+            current_path[count] = i;
+            tsp(current_path, count + 1, current_cost + graph[current_path[count - 1]][i]);
+            visited[i] = 0;
+        }
+    }
+}
+
+int main() {
+    int start_node = 0;
+    int current_path[N];
+    current_path[0] = start_node;
+    visited[start_node] = 1;
+
+    tsp(current_path, 1, 0);
+
+    printf("Shortest path cost: %d\n", min_path);
+    printf("Shortest path: ");
+    for (int i = 0; i <= N; i++) {
+        printf("%d", min_path_arr[i]);
+        if (i < N) {
+            printf(" -> ");
+        }
+    }
+    printf("\n");
+    return 0;
+}
