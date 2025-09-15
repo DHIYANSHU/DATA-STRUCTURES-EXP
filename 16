@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TABLE_SIZE 10
+
+int hash_table[TABLE_SIZE];
+
+// Function to initialize the hash table with -1
+void init_hash_table() {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        hash_table[i] = -1;
+    }
+}
+
+// Hash function
+int hash(int key) {
+    return key % TABLE_SIZE;
+}
+
+// Function to insert a key into the hash table using Linear Probing
+void insert(int key) {
+    int index = hash(key);
+
+    if (hash_table[index] == -1) {
+        hash_table[index] = key;
+    } else {
+        // Linear probing to find the next available slot
+        int i = (index + 1) % TABLE_SIZE;
+        while (i != index) {
+            if (hash_table[i] == -1) {
+                hash_table[i] = key;
+                return;
+            }
+            i = (i + 1) % TABLE_SIZE;
+        }
+        printf("Hash table is full, cannot insert %d\n", key);
+    }
+}
+
+// Function to search for a key in the hash table
+int search(int key) {
+    int index = hash(key);
+
+    if (hash_table[index] == key) {
+        return 1;
+    } else {
+        // Linear probing to find the key
+        int i = (index + 1) % TABLE_SIZE;
+        while (i != index) {
+            if (hash_table[i] == key) {
+                return 1;
+            }
+            if (hash_table[i] == -1) {
+                return 0; // Key not found
+            }
+            i = (i + 1) % TABLE_SIZE;
+        }
+    }
+    return 0; // Key not found
+}
+
+// Function to display the hash table
+void display() {
+    printf("Hash Table:\n");
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        printf("Index %d: ", i);
+        if (hash_table[i] != -1) {
+            printf("%d\n", hash_table[i]);
+        } else {
+            printf("Empty\n");
+        }
+    }
+}
+
+int main() {
+    init_hash_table();
+
+    insert(10);
+    insert(20);
+    insert(30);
+    insert(40);
+    insert(50);
+    insert(11); // This will cause a collision at index 1 and use linear probing
+
+    display();
+
+    int key_to_search = 11;
+    if (search(key_to_search)) {
+        printf("Element %d found.\n", key_to_search);
+    } else {
+        printf("Element %d not found.\n", key_to_search);
+    }
+
+    return 0;
+}
