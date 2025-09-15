@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_EDGES 100
+#define MAX_VERTICES 100
+
+// A structure to represent a weighted edge in the graph
+struct Edge {
+    int src, dest, weight;
+};
+
+// A structure to represent a subset for union-find
+struct Subset {
+    int parent;
+    int rank;
+};
+
+// A structure to represent a graph
+struct Graph {
+    int V, E;
+    struct Edge* edge;
+};
+
+// Function to create a graph with V vertices and E edges
+struct Graph* create_graph(int V, int E) {
+    struct Graph* graph = (struct Graph*)malloc(sizeof(struct Graph));
+    graph->V = V;
+    graph->E = E;
+    graph->edge = (struct Edge*)malloc(E * sizeof(struct Edge));
+    return graph;
+}
+
+// A utility function to find the set of an element i (using path compression)
+int find(struct Subset subsets[], int i) {
+    if (subsets[i].parent != i)
+        subsets[i].parent = find(subsets, subsets[i].parent);
+    return subsets[i].parent;
+}
+
+// A function that does union of two sets of x and y (using union by rank)
+void union_sets(struct Subset subsets[], int x, int y) {
+    int x_root = find(subsets, x);
+    int y_root = find(subsets, y);
+
+    if (subsets[x_root].rank < subsets[y_root].rank)
+        subsets[x_root].parent = y_root;
+    else if (subsets[x_root].rank > subsets[y_root].rank)
+        subsets[y_root].parent = x_root;
+    else {
+        subsets[y_root].parent = x_root;
+        subsets[x_root].rank++;
+    }
+}
+
+// Compare two edges according to their weights
+int compare_edges(const void* a, const void* b) {
+    struct Edge* a1 = (struct Edge*)a;
+    struct Edge* b1 = (struct Edge*)b;
+    return a1->weight > b1->weight;
+}
+
+// Function to construct MST using Kruskal's algorithm
+void kruskal_mst(struct Graph* graph) {
+    int V = graph->V;
+    struct Edge result[V];
+    int e = 0; // An index variable, used for result[]
+    int i = 0; // An index variable, used for sorted edges
+
+    // Step 1: Sort all the edges in non-decreasing order of their weight
+    qsort(graph->edge, graph->E, sizeof(graph->edge[0]), compare_edges);
+
+    // Allocate memory for V subsets
+    struct Subset* subsets = (struct Subset*)malloc(V * sizeof(struct Subset));
+
+    // Create V subsets with single elements
+    for (int v = 0; v < V; ++v) {
+        subsets[v].parent = v;
+        subsets[v].rank = 0;
+    }
+
+    while (e < V - 1 && i < graph->E) {
+        struct Edge next_edge = graph->edge[i++];
+
+        int x = find(subsets, next_edge.src);
+        int y = find(subsets, next_edge.dest);
+
+        // If including this edge does not cause a cycle, include it
+        if (x != y) {
+            result[e++] = next_edge;
+            union_sets(subsets, x, y);
+        }
+    }
+
+    printf("Following are the edges in the constructed MST\n");
+    for (i = 0; i < e; ++i)
+        printf("%d -- %d == %d\n", result[i].src, result[i].dest, result[i].weight);
+
+    free(subsets);
+}
+
+int main() {
+    int V = 4; // Number of vertices
+    int E = 5; // Number of edges
+    struct Graph* graph = create_graph(V, E);
+
+    // Add edges
+    graph->edge[0].src = 0;
+    graph->edge[0].dest = 1;
+    graph->edge[0].weight = 10;
+
+    graph->edge[1].src = 0;
+    graph->edge[1].dest = 2;
+    graph->edge[1].weight = 6;
+
+    graph->edge[2].src = 0;
+    graph->edge[2].dest = 3;
+    graph->edge[2].weight = 5;
+
+    graph->edge[3].src = 1;
+    graph->edge[3].dest = 3;
+    graph->edge[3].weight = 15;
+
+    graph->edge[4].src = 2;
+    graph->edge[4].dest = 3;
+    graph->edge[4].weight = 4;
+
+    kruskal_mst(graph);
+
+    return 0;
+}
