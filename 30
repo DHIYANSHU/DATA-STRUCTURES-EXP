@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void printList(Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+Node* mergeLists(Node* head1, Node* head2) {
+    if (!head1) return head2;
+    if (!head2) return head1;
+
+    Node* result = NULL;
+    if (head1->data <= head2->data) {
+        result = head1;
+        result->next = mergeLists(head1->next, head2);
+    } else {
+        result = head2;
+        result->next = mergeLists(head1, head2->next);
+    }
+    return result;
+}
+
+int main() {
+    Node* list1 = createNode(1);
+    list1->next = createNode(3);
+    list1->next->next = createNode(5);
+
+    Node* list2 = createNode(2);
+    list2->next = createNode(4);
+    list2->next->next = createNode(6);
+
+    Node* mergedList = mergeLists(list1, list2);
+    printf("Merged list: ");
+    printList(mergedList);
+    return 0;
+}
