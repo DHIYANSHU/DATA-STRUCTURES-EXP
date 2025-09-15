@@ -1,0 +1,40 @@
+#include <stdio.h>
+
+int linearSearch(int arr[], int size, int key) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == key) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int binarySearch(int arr[], int size, int key) {
+    int low = 0;
+    int high = size - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == key) {
+            return mid;
+        }
+        if (arr[mid] < key) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    int arr[] = {10, 20, 30, 40, 50, 60, 70, 80};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    int key = 50;
+
+    int linearIndex = linearSearch(arr, size, key);
+    printf("Linear search: Element %d found at index %d\n", key, linearIndex);
+
+    int binaryIndex = binarySearch(arr, size, key);
+    printf("Binary search: Element %d found at index %d\n", key, binaryIndex);
+    return 0;
+}
