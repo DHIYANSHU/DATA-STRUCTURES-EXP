@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <limits.h>
+
+int reverse(int x) {
+    long long reversed = 0;
+    while (x != 0) {
+        int digit = x % 10;
+        reversed = reversed * 10 + digit;
+        x /= 10;
+    }
+    if (reversed > INT_MAX || reversed < INT_MIN) {
+        return 0;
+    }
+    return (int)reversed;
+}
+
+int main() {
+    int num = 12345;
+    printf("Reversed integer of %d is: %d\n", num, reverse(num));
+    return 0;
+}
